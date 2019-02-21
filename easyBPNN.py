@@ -2,12 +2,12 @@ import numpy as np
 
 
 def sigmoid(z):  # 激活函数
-    s = 1 / (1 + np.exp(-z))
-    return s
+    a = 1 / (1 + np.exp(-z))
+    return a
 
 
-def d_sigmoid(x):  # 激活函数的导数
-    return x * (1 - x)
+def d_sigmoid(a):  # 激活函数的导数
+    return a * (1 - a)
 
 
 X = np.array(
@@ -29,6 +29,7 @@ w2 = np.random.randn(4, 1) * np.sqrt(1 / 4)
 b2 = np.random.randn(1, 1)
 alpha = 1  # 学习效率
 lambd = 0.03  # 正则化参数
+
 for i in range(0, 500):  # 迭代500次
     # 向前传播
     Z1 = np.dot(w1.T, X) + b1
@@ -61,7 +62,7 @@ def predict(x):  # 预测函数
     z1_test = np.dot(w1.T, x) + b1
     a1_test = sigmoid(z1_test)
     z2_test = np.dot(w2.T, a1_test) + b2
-    a2_test = (1.0 / (1 + np.exp(-z2_test)))
+    a2_test = sigmoid(z2_test)
     return a2_test
 
 
