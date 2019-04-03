@@ -27,9 +27,9 @@ for i in range(1, 20):  # 迭代
     IncrementalOutput.append(output[0])  # 添加输出结果
     IncrementalTime.append(i)  # 添加时间次数
 
-plt.rcParams['font.sans-serif'] = ['SimHei']  # 用来正常显示中文标签
-plt.plot(IncrementalTime, IncrementalOutput, label='output')
-plt.xticks(IncrementalTime)  # 设置X轴坐标
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置正常显示中文
+plt.plot(IncrementalTime, IncrementalOutput, label='output')  # 设置曲线数值
+plt.xticks(IncrementalTime)  # 设置X轴坐标数值标识
 plt.xlim(0)  # 设置X轴的范围（起始坐标）
 plt.ylim(0)  # 设置Y轴的范围（起始坐标）
 plt.xlabel('次数')  # 设置X轴的名字
