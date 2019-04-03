@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 
-Kp = 0.3  # 比例系数
-Ki = 0.03  # 计分系数
-Kd = 0.03  # 微分系数
+Kp = 0.3  # 比例系数 调整系统的响应速度
+Ki = 0.03  # 积分系数 主要解决达不到设定值的静态误差问题
+Kd = 0.03  # 微分系数 主要解决积分项I存在导致系统的响应速度问题
 
 goal = 100  # 目标值
 output = [0, 0]  # 输出
@@ -14,7 +14,10 @@ def IncrementalPID_control():
     global bmp, output
     err[1] = err[0]  # 更新误差
     err[0] = goal - bmp
+
     output[0] = output[1] + Kp * err[0] + Ki * (err[0] + err[1]) + Kd * (err[0] - err[1])  # PID调节
+    # 输出 = 基准 + P * 误差 + I * 累积误差 + D * 误差偏差
+
     bmp = output[0]  # 假设反馈等于现输出
     output[1] = output[0]  # 记录现输出
 
