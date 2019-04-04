@@ -14,10 +14,8 @@ def IncrementalPID_control():
     global bmp, output
     err[1] = err[0]  # 更新误差
     err[0] = goal - bmp
-
-    output[0] = output[1] + Kp * err[0] + Ki * (err[0] + err[1]) + Kd * (err[0] - err[1])  # PID调节
     # 输出 = 基准 + P * 误差 + I * 累积误差 + D * 误差偏差
-
+    output[0] = output[1] + Kp * err[0] + Ki * (err[0] + err[1]) + Kd * (err[0] - err[1])  # PID调节
     bmp = output[0]  # 假设反馈等于现输出
     output[1] = output[0]  # 记录现输出
 
@@ -37,6 +35,6 @@ plt.xlim(0)  # 设置X轴的范围（起始坐标）
 plt.ylim(0)  # 设置Y轴的范围（起始坐标）
 plt.xlabel('次数')  # 设置X轴的名字
 plt.ylabel('输出')  # 设置Y轴的名字
-plt.title("PID趋势图")  # 设置标题
+plt.title("P:{0} I:{1} D:{2} 趋势图".format(Kp, Ki, Kd))  # 设置标题
 plt.legend()  # 设置图例
 plt.show()  # 显示图表
