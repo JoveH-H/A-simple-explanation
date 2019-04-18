@@ -2,14 +2,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 delta_t = 0.1                               # 每秒钟采一次样
-end_t = 8                                   # 时间长度
+end_t = 7                                   # 时间长度
 time_t = end_t * 10                         # 采样次数
 t = np.arange(0, end_t, delta_t)            # 设置时间数组
 
-u = 10                                      # 定义外界对系统的作用 加速度
+u = 1                                     # 定义外界对系统的作用 加速度
 x = 1 / 2 * u * t ** 2                      # 实际真实位置
 
-v_var = 7                                   # 测量噪声的方差
+v_var = 1                                   # 测量噪声的方差
 # 创建高斯噪声，精确到小数点后两位
 v_noise = np.round(np.random.normal(0, v_var, time_t), 2)
 
@@ -37,10 +37,10 @@ for i in range(time_t):
 
 plt.rcParams['font.sans-serif'] = ['SimHei']    # 设置正常显示中文
 plt.plot(x, "b", label='实际状态值')             # 设置曲线数值
-plt.plot(X_mat, "G", label='预测优化值')
+plt.plot(X_mat, "g", label='预测优化值')
 plt.plot(z.T, "r--", label='测量值')
 plt.xlabel("时间")                               # 设置X轴的名字
 plt.ylabel("位移")                               # 设置Y轴的名字
-plt.title("卡尔曼滤波图")                         # 设置标题
+plt.title("卡尔曼滤波示意图")                     # 设置标题
 plt.legend()                                    # 设置图例
 plt.show()                                      # 显示图表
