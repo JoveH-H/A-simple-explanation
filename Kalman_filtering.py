@@ -26,12 +26,12 @@ X_mat = np.zeros(time_t)
 
 for i in range(time_t):
     # 预测
-    X_predict = A * X + np.dot(B, u)
-    P_predict = A * P * A.T + Q
+    X_predict = A * X + np.dot(B, u)        # 估算状态变量
+    P_predict = A * P * A.T + Q             # 估算状态误差协方差
     # 校正
-    K = P_predict * H.T / (H * P_predict * H.T + R)
-    X = X_predict + K * (z[0, i] - H * X_predict)
-    P = (np.eye(2) - K * H) * P_predict
+    K = P_predict * H.T / (H * P_predict * H.T + R)     # 更新卡尔曼增益
+    X = X_predict + K * (z[0, i] - H * X_predict)       # 更新预测优化值
+    P = (np.eye(2) - K * H) * P_predict                 # 更新状态误差协方差
     # 记录系统的预测优化值
     X_mat[i] = X[0, 0]
 
