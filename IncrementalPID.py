@@ -6,17 +6,17 @@ Kd = 0.03  # 微分系数 主要解决积分项I存在导致系统的响应速�
 
 goal = 100  # 目标值
 output = [0, 0]  # 输出
-bmp = 0  # 编码器反馈
+bmq = 0  # 编码器反馈
 err = [0, 0]  # 输出误差
 
 
 def IncrementalPID_control():
-    global bmp, output
+    global bmq, output
     err[1] = err[0]  # 更新误差
-    err[0] = goal - bmp
+    err[0] = goal - bmq
     # 输出 = 基准 + P * 误差 + I * 累积误差 + D * 误差偏差
     output[0] = output[1] + Kp * err[0] + Ki * (err[0] + err[1]) + Kd * (err[0] - err[1])  # PID调节
-    bmp = output[0]  # 假设反馈等于现输出
+    bmq = output[0]  # 假设反馈等于现输出
     output[1] = output[0]  # 记录现输出
 
 
