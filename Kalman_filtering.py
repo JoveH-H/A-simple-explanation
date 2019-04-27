@@ -22,7 +22,7 @@ P = np.mat([[1, 0], [0, 1]])                # 定义初始状态协方差矩阵
 Q = np.mat([[0.001, 0], [0, 0.001]])        # 定义状态转移(预测噪声)协方差矩阵
 H = np.mat([1, 0])                          # 定义观测矩阵
 R = np.mat([1])                             # 定义观测噪声协方差
-X_mat = np.zeros(time_t)
+X_mat = np.zeros(time_t)                    # 初始化记录系统预测优化值的列表
 
 for i in range(time_t):
     # 预测
