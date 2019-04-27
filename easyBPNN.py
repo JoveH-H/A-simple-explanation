@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def sigmoid(z):  # 激活函数
@@ -29,6 +30,7 @@ w2 = np.random.randn(4, 1) * np.sqrt(1 / 4)
 b2 = np.random.randn(1, 1)
 alpha = 1  # 学习效率
 lambd = 0.03  # 正则化参数
+cost = np.zeros(500)  # 初始化记录代价的列表
 
 for i in range(0, 500):  # 迭代500次
     # 向前传播
@@ -48,11 +50,18 @@ for i in range(0, 500):  # 迭代500次
     b2 = b2 - alpha * db2
     w1 = w1 - alpha * dw1
     b1 = b1 - alpha * db1
-    if i % 10 == 0:
-        print("train:" + str(i + 1) + " cost:" + str(-1 / m * np.sum(y * np.log(A2) + (1 - y) * np.log(1 - A2))))
-else:
-    print("train:" + str(i + 1) + " cost:" + str(-1 / m * np.sum(y * np.log(A2) + (1 - y) * np.log(1 - A2))))
-print("w1:" + str(w1) + "\nw2:" + str(w1))
+    # 记录代价（损失、误差）
+    cost[i] = -1 / m * np.sum(y * np.log(A2) + (1 - y) * np.log(1 - A2))
+
+plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置正常显示中文
+plt.plot(cost, "b", label='代价')  # 设置曲线数值
+plt.xlabel("迭代次数")  # 设置X轴的名字
+plt.ylabel("代价")  # 设置Y轴的名字
+plt.title("代价变化图")  # 设置标题
+plt.legend()  # 设置图例
+plt.show()  # 显示图表
+
+print("w1:" + str(w1) + "\nw2:" + str(w1))  # 显示权重
 print("b1:" + str(b1) + "\nb2:" + str(b2))
 
 
