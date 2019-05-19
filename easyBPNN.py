@@ -22,7 +22,7 @@ y = np.array(
     [[0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]])
 
 m = X.shape[1]
-X = (X - np.mean(X)) / np.linalg.norm(X, ord=2, axis=1, keepdims=True)  # 归一化输入
+X = (X - np.mean(X)) / np.linalg.norm(X, ord=2, axis=1, keepdims=True)  # 标准化输入
 
 w1 = np.random.randn(3, 4) * np.sqrt(1 / 3)  # 权重初始化
 b1 = np.random.randn(4, 1)
