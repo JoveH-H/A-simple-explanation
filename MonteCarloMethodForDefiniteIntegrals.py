@@ -1,10 +1,11 @@
 import random
 
-n = 300000
-count = 0
+n = 300000  # 总投点数
+count = 0  # 位于曲线之下的投点数
 
-x_min, x_max = 1.0, 2.0
-y_min, y_max = 1.0, 2.0
+# 投点x,y的范围
+x_min, x_max = 0.0, 1.0
+y_min, y_max = 0.0, 1.0
 
 for i in range(0, n):
 
@@ -13,9 +14,9 @@ for i in range(0, n):
     y = random.uniform(y_min, y_max)
 
     # 位于曲线之下的投点数+1
-    if x * x >= y:
+    if x * x * x >= y:
         count += 1
 
-# 所求的积分值即为曲线下方的面积与正方形面积的比
+# 所求的积分值即为曲线下方的面积与正方形面积1的比
 result = count / float(n)
 print("result is ", result)
