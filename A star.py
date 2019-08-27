@@ -67,10 +67,10 @@ class AStar:
         :param startPoint: Point或二元组类型的寻路起点
         :param goalPoint: Point或二元组类型的寻路终点
         :param passTag: int类型的可行走标记（若地图数据!=passTag 即为障碍）
-        :param hef: 启发式函数 MD:曼哈顿距离 ED:欧几里得距离 DD:对角线距离
+        :param hef: 启发式函数 MD:曼哈顿距离 DD:对角线距离 ED:欧几里得距离
         """
         # 启发式函数
-        if hef != 'DD' and hef != 'ED' and hef != 'MD':
+        if hef != 'MD' and  hef != 'DD' and hef != 'ED':
             hef = 'MD'
             print("启发式函数输入有误，应为MD DD ED\n默认设置曼哈顿距离")
         self.hef = hef
@@ -264,7 +264,7 @@ if __name__ == '__main__':
     # 显示地图设置障碍后的样子
     Display_map(map2d, title="设置障碍")
 
-    # 设置起点为，终点
+    # 设置起点，终点
     startx, starty = 0, 0
     goalx, goaly = 9, 8
     # 创建AStar对象
