@@ -57,11 +57,11 @@ class AStar:
         :param map2d: Array2D类型的寻路数组
         :param startPoint: Point或二元组类型的寻路起点
         :param goalPoint: Point或二元组类型的寻路终点
-        :param passTag: int类型的可行走标记（若地图数据!=passTag即为障碍）
+        :param passTag: int类型的可行走标记（若地图数据!=passTag 即为障碍）
         """
-        # 开启表
+        # 开启表，保存已产生而未访问的结点
         self.openList = []
-        # 关闭表
+        # 关闭表，保存已访问过的结点
         self.closeList = []
         # 寻路地图
         self.map2d = map2d
@@ -106,9 +106,9 @@ class AStar:
 
     def goalPointeInCloseList(self):
         """
-        判断目标结点是否在CloseList
+        判断目标结点是否在CloseList，如果存在则返回目标结点
         """
-        for node in self.openList:
+        for node in self.closeList:
             if node.point == self.goalPoint:
                 return node
         return None
@@ -176,7 +176,6 @@ class AStar:
             # 判断是否终止
             point = self.goalPointeInCloseList()
             if point:  # 如果终点在关闭表中，就返回结果
-                # print("关闭表中")
                 cPoint = point
                 pathList = []
                 while True:
@@ -195,7 +194,7 @@ def Display_map(map, start=None, goal=None, title=None):
     :param map: 所需显示的地图参数
     :param start: 起始点
     :param goal: 目标点
-    :param title_str: 标题
+    :param title: 标题
     :return:None
     """
     plt.rcParams['font.sans-serif'] = ['SimHei']  # 设置正常显示中文
