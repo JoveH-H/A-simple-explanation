@@ -40,25 +40,40 @@ class Point:
 
 class AStar:
     """
-    AStar算法，启发式函数：曼哈顿距离
+    AStar算法，启发式函数默认曼哈顿距离
     """
 
     class Node:  # 描述AStar算法中的节点数据
-        def __init__(self, point, goalPoint, g=0):
+        def __init__(self, point, goalPoint, g=0, hef='MD'):
             self.point = point  # 自己的坐标
             self.father = None  # 父节点
             self.g = g  # g值，当前已产生的代价
-            self.D = 10  # 曼哈顿距离的D倍
-            self.h = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y)) * self.D  # h值，未来可能产生的代价（曼哈顿距离）
+            self.D = 10  # D倍
+            # h值，未来可能产生的代价
+            if hef == 'DD':
+                D2 = np.sqrt(2) * self.D
+                h_diagonal = min(abs(point.x - goalPoint.x), abs(point.y - goalPoint.y))
+                h_straight = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y))
+                self.h = D2 * h_diagonal + self.D * (h_straight - 2 * h_diagonal)  # 对角线距离
+            elif hef == 'ED':
+                self.h = np.sqrt(pow(point.x - goalPoint.x, 2) + pow(point.y - goalPoint.y, 2))  # 欧几里得距离
+            else:
+                self.h = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y)) * self.D  # 曼哈顿距离
 
-    def __init__(self, map2d, startPoint, goalPoint, passTag=0):
+    def __init__(self, map2d, startPoint, goalPoint, passTag=0, hef='MD'):
         """
         构造AStar算法的启动条件
         :param map2d: Array2D类型的寻路数组
         :param startPoint: Point或二元组类型的寻路起点
         :param goalPoint: Point或二元组类型的寻路终点
         :param passTag: int类型的可行走标记（若地图数据!=passTag 即为障碍）
+        :param hef: 启发式函数 MD:曼哈顿距离 ED:欧几里得距离 DD:对角线距离
         """
+        # 启发式函数
+        if hef != 'DD' and hef != 'ED' and hef != 'MD':
+            hef = 'MD'
+            print("启发式函数输入有误，应为MD DD ED\n默认设置曼哈顿距离")
+        self.hef = hef
         # 开启表，保存已产生而未访问的结点
         self.openList = []
         # 关闭表，保存已访问过的结点
@@ -115,10 +130,10 @@ class AStar:
 
     def searchNear(self, minF, offsetX, offsetY):
         """
-        搜索节点周围的点
-        :param minF:F值最小的节点
-        :param offsetX:坐标偏移量x
-        :param offsetY:坐标偏移量y
+        搜索结点周围的点
+        :param minF:F值最小的结点
+        :param offsetX:坐标x轴偏移量
+        :param offsetY:坐标y轴偏移量
         :return:
         """
         # 越界检测
@@ -132,7 +147,7 @@ class AStar:
         currentPoint = Point(minF.point.x + offsetX, minF.point.y + offsetY)
         if self.pointInCloseList(currentPoint):
             return
-        # 设置单位花费
+        # 设置单位代价
         if offsetX == 0 or offsetY == 0:
             step = 10
         else:
@@ -140,26 +155,30 @@ class AStar:
         # 如果不再openList中，就把它加入openlist
         currentNode = self.pointInOpenList(currentPoint)
         if not currentNode:
-            currentNode = AStar.Node(currentPoint, self.goalPoint, g=minF.g + step)
+            currentNode = AStar.Node(currentPoint, self.goalPoint, g=minF.g + step, hef=self.hef)
             currentNode.father = minF
             self.openList.append(currentNode)
             return
-        # 如果在openList中，判断minF到当前点的G是否更小
+        # 如果在openList中，判断minF到当前点的g值是否更小
         if minF.g + step < currentNode.g:  # 如果更小，就重新计算g值，并且改变father
             currentNode.g = minF.g + step
             currentNode.father = minF
 
-    def start(self):
+    def start(self, sn=4):
         """
         开始寻路
         :return: None或Point列表（路径）
         """
-        # 判断寻路终点是否是障碍
+        # 判断起始点是否是障碍
+        if self.map2d[self.startPoint.x][self.startPoint.y] != self.passTag:
+            return None
+
+        # 判断目标点是否是障碍
         if self.map2d[self.goalPoint.x][self.goalPoint.y] != self.passTag:
             return None
 
         # 1.将起点放入开启列表
-        startNode = AStar.Node(self.startPoint, self.goalPoint)
+        startNode = AStar.Node(self.startPoint, self.goalPoint, hef=self.hef)
         self.openList.append(startNode)
         # 2.主循环逻辑
         while True:
@@ -168,11 +187,17 @@ class AStar:
             # 把这个点加入closeList中，并且在openList中删除它
             self.closeList.append(minF)
             self.openList.remove(minF)
-            # 判断这个节点的上下左右节点
+            # 判断这个节点的上下左右节点，默认不允许对角运动
             self.searchNear(minF, 0, -1)
             self.searchNear(minF, 0, 1)
             self.searchNear(minF, -1, 0)
             self.searchNear(minF, 1, 0)
+            # 若启发式函数非曼哈顿距离，允许对角运动
+            if self.hef != 'MD':
+                self.searchNear(minF, 1, 1)
+                self.searchNear(minF, 1, -1)
+                self.searchNear(minF, -1, 1)
+                self.searchNear(minF, -1, -1)
             # 判断是否终止
             point = self.goalPointeInCloseList()
             if point:  # 如果终点在关闭表中，就返回结果
@@ -203,18 +228,18 @@ def Display_map(map, start=None, goal=None, title=None):
     plt.xticks(np.arange(0, map.w, 1))
     plt.yticks(np.arange(0, map.h, 1))
     plt.grid(lw=2)
-    obstacles_x, obstacles_y = [], []
+    obstaclesX, obstaclesY = [], []
     pathx, pathy = [], []
     for x in range(map.w):
         for y in range(map.h):
             if map[x][y] == 1:
-                obstacles_x.append(x)
-                obstacles_y.append(y)
+                obstaclesX.append(x)
+                obstaclesY.append(y)
             elif map[x][y] == 'o':
                 pathx.append(x)
                 pathy.append(y)
-    if obstacles_x != []:
-        plt.plot(obstacles_x, obstacles_y, 'xr', markersize=10, label='障碍')
+    if obstaclesX != []:
+        plt.plot(obstaclesX, obstaclesY, 'xr', markersize=10, label='障碍')
     if pathx != []:
         plt.plot(pathx, pathy, 'og', markersize=10, label='路径')
     if start != None:
@@ -233,7 +258,7 @@ if __name__ == '__main__':
     map2d = Array2D(mapw, maph)
 
     # 设置障碍
-    obstacle = [[4, 0], [4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6]]
+    obstacle = [[4, 9], [4, 8], [4, 7], [4, 6], [4, 5]]
     for i in obstacle:
         map2d[i[0]][i[1]] = 1
     # 显示地图设置障碍后的样子
@@ -241,9 +266,9 @@ if __name__ == '__main__':
 
     # 设置起点为，终点
     startx, starty = 0, 0
-    goalx, goaly = 9, 4
+    goalx, goaly = 9, 8
     # 创建AStar对象
-    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly))
+    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly), hef='MD')
     # 开始寻路
     pathList = aStar.start()
 
