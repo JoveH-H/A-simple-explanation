@@ -188,7 +188,7 @@ class AStar:
             # 把这个点加入closeList中，并且在openList中删除它
             self.closeList.append(minF)
             self.openList.remove(minF)
-            # 判断这个目标点的上下左右结点，默认不允许对角运动
+            # 判断这个目标点的上下左结点，默认不允许对角运动
             self.searchNear(minF, 0, -1)
             self.searchNear(minF, 0, 1)
             self.searchNear(minF, -1, 0)
@@ -268,8 +268,11 @@ if __name__ == '__main__':
     # 设置起点，终点
     startx, starty = 0, 0
     goalx, goaly = 9, 8
+    # 显示地图设置起点和终点后的样子
+    Display_map(map2d, [startx, starty], [goalx, goaly], title="规划准备")
+
     # 创建AStar对象
-    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly), hef='ED')
+    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly), hef='MD')
     # 开始寻路
     pathList = aStar.start()
 
