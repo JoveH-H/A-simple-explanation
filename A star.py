@@ -11,13 +11,13 @@ class Array2D:
     """
 
     def __init__(self, w, h):
-        self.w = w
-        self.h = h
-        self.data = []
-        self.data = [[0 for y in range(h)] for x in range(w)]
+        self.w = w  # 地图的宽
+        self.h = h  # 地图的高
+        self.data = []  # 地图的存储数据
+        self.data = [[0 for y in range(h)] for x in range(w)]  # 数据初始化赋0
 
     def __getitem__(self, item):
-        return self.data[item]
+        return self.data[item]  # 设置获取所存储的数据
 
 
 class Point:
@@ -26,15 +26,15 @@ class Point:
     """
 
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
+        self.x = x  # 结点的x坐标
+        self.y = y  # 结点的y坐标
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # 判断引用是否相等
         if self.x == other.x and self.y == other.y:
             return True
         return False
 
-    def __str__(self):
+    def __str__(self):  # 定义打印时的格式
         return "x:" + str(self.x) + ",y:" + str(self.y)
 
 
@@ -43,22 +43,23 @@ class AStar:
     AStar算法，启发式函数默认曼哈顿距离
     """
 
-    class Node:  # 描述AStar算法中的节点数据
+    # 描述AStar算法中的结点数据
+    class Node:
         def __init__(self, point, goalPoint, g=0, hef='MD'):
             self.point = point  # 自己的坐标
-            self.father = None  # 父节点
+            self.father = None  # 父结点
             self.g = g  # g值，当前已产生的代价
             self.D = 10  # D倍
             # h值，未来可能产生的代价
-            if hef == 'DD':
+            if hef == 'DD':  # 对角线距离
                 D2 = np.sqrt(2) * self.D
                 h_diagonal = min(abs(point.x - goalPoint.x), abs(point.y - goalPoint.y))
                 h_straight = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y))
-                self.h = D2 * h_diagonal + self.D * (h_straight - 2 * h_diagonal)  # 对角线距离
-            elif hef == 'ED':
-                self.h = np.sqrt(pow(point.x - goalPoint.x, 2) + pow(point.y - goalPoint.y, 2))  # 欧几里得距离
-            else:
-                self.h = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y)) * self.D  # 曼哈顿距离
+                self.h = D2 * h_diagonal + self.D * (h_straight - 2 * h_diagonal)
+            elif hef == 'ED':  # 欧几里得距离
+                self.h = np.sqrt(pow(point.x - goalPoint.x, 2) + pow(point.y - goalPoint.y, 2))
+            else:  # 曼哈顿距离
+                self.h = (abs(point.x - goalPoint.x) + abs(point.y - goalPoint.y)) * self.D
 
     def __init__(self, map2d, startPoint, goalPoint, passTag=0, hef='MD'):
         """
@@ -70,7 +71,7 @@ class AStar:
         :param hef: 启发式函数 MD:曼哈顿距离 DD:对角线距离 ED:欧几里得距离
         """
         # 启发式函数
-        if hef != 'MD' and  hef != 'DD' and hef != 'ED':
+        if hef != 'MD' and hef != 'DD' and hef != 'ED':
             hef = 'MD'
             print("启发式函数输入有误，应为MD DD ED\n默认设置曼哈顿距离")
         self.hef = hef
@@ -159,12 +160,12 @@ class AStar:
             currentNode.father = minF
             self.openList.append(currentNode)
             return
-        # 如果在openList中，判断minF到当前点的g值是否更小
+        # 在openList中，判断minF到当前点的g值是否更小
         if minF.g + step < currentNode.g:  # 如果更小，就重新计算g值，并且改变father
             currentNode.g = minF.g + step
             currentNode.father = minF
 
-    def start(self, sn=4):
+    def start(self):
         """
         开始寻路
         :return: None或Point列表（路径）
@@ -187,7 +188,7 @@ class AStar:
             # 把这个点加入closeList中，并且在openList中删除它
             self.closeList.append(minF)
             self.openList.remove(minF)
-            # 判断这个节点的上下左右节点，默认不允许对角运动
+            # 判断这个目标点的上下左右节点，默认不允许对角运动
             self.searchNear(minF, 0, -1)
             self.searchNear(minF, 0, 1)
             self.searchNear(minF, -1, 0)
@@ -268,7 +269,7 @@ if __name__ == '__main__':
     startx, starty = 0, 0
     goalx, goaly = 9, 8
     # 创建AStar对象
-    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly), hef='MD')
+    aStar = AStar(map2d, Point(startx, starty), Point(goalx, goaly), hef='ED')
     # 开始寻路
     pathList = aStar.start()
 
