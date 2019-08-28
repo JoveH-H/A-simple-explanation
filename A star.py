@@ -188,7 +188,7 @@ class AStar:
             # 把这个点加入closeList中，并且在openList中删除它
             self.closeList.append(minF)
             self.openList.remove(minF)
-            # 判断这个目标点的上下左右节点，默认不允许对角运动
+            # 判断这个目标点的上下左右结点，默认不允许对角运动
             self.searchNear(minF, 0, -1)
             self.searchNear(minF, 0, 1)
             self.searchNear(minF, -1, 0)
