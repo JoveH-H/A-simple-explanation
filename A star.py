@@ -153,7 +153,7 @@ class AStar:
             step = 10
         else:
             step = 14
-        # 如果不再openList中，就把它加入openlist
+        # 如果不在openList中，就把它加入openlist
         currentNode = self.pointInOpenList(currentPoint)
         if not currentNode:
             currentNode = AStar.Node(currentPoint, self.goalPoint, g=minF.g + step, hef=self.hef)
